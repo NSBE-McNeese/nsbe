@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Josefin Sans", sans-serif;
+  background-repeat: no-repeat;
+  background-position: 60% 20%;
+  background-size: 600px 600px;
+  background-attachment: fixed;
+}
+
+.main-layout {
+  display: flex;
+  height: 100vh;
+  background: #f3f5f9;
+  background-image: url("../logo/msu_horse_logo_trans3.png");
+  background-repeat: no-repeat;
+  background-position: 60% 20%;
+  background-size: 600px 600px;
+  background-attachment: fixed;
+}
+
+.navbar-container {
+  width: 170px; 
+  transition: width 0.3s ease-in-out;
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  height: 100%; 
+}
+
+.navbar-container.closed {
+  width: 0;
+}
+
+.main-content {
+  margin-left: 170px; 
+  flex-grow: 1; 
+  padding: 20px; 
+}
+
+.main-content.noNavbar {
+    margin-left: 0;
+}
+
+
+@media (max-width: 768px) {
+  .navbar-container {
+    display: none; 
+  }
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}

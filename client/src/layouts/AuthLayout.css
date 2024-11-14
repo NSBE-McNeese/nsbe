@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+body {
+  position: relative;
+}
+
+.auth-layout::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../logo/MSUHorseRider_blue.png");
+  background-repeat: no-repeat;
+  background-position: 60% 20%;
+  background-size: 600px 600px;
+  background-attachment: fixed;
+
+}
