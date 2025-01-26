@@ -12,17 +12,40 @@ body {
   position: relative;
 }
 
+.auth-layout {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .auth-layout::before {
   content: "";
-  position: fixed;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../logo/background_network_lines.jpeg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1380px 920px;
+  filter: blur(5px);
+  z-index: -2;
+}
+
+.auth-layout::after {
+  content: "";
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-image: url("../logo/MSUHorseRider_blue.png");
   background-repeat: no-repeat;
-  background-position: 60% 20%;
+  background-position: center;
   background-size: 600px 600px;
-  background-attachment: fixed;
-
+  z-index: -1;
 }

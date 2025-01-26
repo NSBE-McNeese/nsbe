@@ -1,0 +1,10 @@
+{% extends "api/auth_email_layout.html" %}
+
+{% block content %}
+<h1>Hello {{ user.first_name }},</h1>
+<p>Welcome to the NSBE @McNeese App!</p>
+<p>
+    Please verify your email by clicking the link below: 
+    {{ verification_link }}
+</p>
+{% endblock %}
