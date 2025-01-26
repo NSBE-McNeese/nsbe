@@ -49,7 +49,7 @@ const PointsPage = () => {
                             <h1 style={{ fontSize: 'large', textDecoration: 'solid', color: 'green', transform: 'translateY(70%)' }}>Points Ranking</h1>
                         </section>
                         <section className="table_body">
-                            <table>
+                            <table>npm
                                 <tbody>
                                     {pointsData.top_members.map((member, index) => (
                                         <tr key={index}>
