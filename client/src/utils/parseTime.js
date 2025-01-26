@@ -1,8 +1,8 @@
-import moment from 'moment';
+import moment from "moment";
 
 function parseTime(timeStamp) {
-    moment.locale('en');
-    return  moment(timeStamp).format('llll');
+  moment.locale("en");
+  return moment(timeStamp).format("llll");
 }
 
-export default parseTime
+export default parseTime;

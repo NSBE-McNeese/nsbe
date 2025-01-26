@@ -41,11 +41,11 @@
 }
 
 .sidebar ul > li:hover {
-  background: #1434A4;
+  background: #1434a4;
   border-radius: 20px;
 }
 .sidebar ul > li:hover a {
-  color: #FFD700;
+  color: #ffd700;
 }
 .sidebar ul > li:hover img {
   filter: invert(1);
@@ -70,7 +70,6 @@
   margin-right: 10px;
 }
 
-
 .bottom_list {
   position: absolute;
   bottom: 10px;
@@ -79,5 +78,3 @@
 .nav-link {
   margin-left: 5px;
 }
-
-
