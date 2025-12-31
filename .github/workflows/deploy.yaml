@@ -4,6 +4,14 @@ on:
   push:
     branches: [ "main" ]
 
+# Global Environment Variables to prevent typos
+env:
+  PROJECT_ID: nsbe-app-482908
+  REGION: us-central1
+  GAR_REPO: nsbe-repo
+  CLUSTER_NAME: nsbe-cluster
+  CLUSTER_ZONE: us-central1-a
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -16,22 +24,32 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-    # 2. Configure Docker to use gcloud command-line tool as a credential helper
+    # 2. Configure Docker
     - name: Docker Auth
-      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+      run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
-    # 3. Build & Push Backend
-    - name: Build Backend
+    # 3. Build & Push Server (The Django app)
+    - name: Build and Push Server
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/nsbe-app-repo/backend:latest ./backend
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/nsbe-app-repo/backend:latest
+        # We use ./server because that is your folder name
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/backend:latest ./server
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/backend:latest
 
-    # 4. Deploy to GKE
+    # 4. Build & Push Client (The React app)
+    - name: Build and Push Client
+      run: |
+        # We use ./client because that is your folder name
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest ./client
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest
+
+    # 5. Get GKE Credentials
     - name: Get GKE Credentials
       uses: google-github-actions/get-gke-credentials@v1
       with:
-        cluster_name: nsbe-cluster
-        location: us-central1-a
+        cluster_name: ${{ env.CLUSTER_NAME }}
+        location: ${{ env.CLUSTER_ZONE }}
 
+    # 6. Deploy to GKE
     - name: Apply K8s Manifests
+        # This will run your client.yaml and server.yaml inside the k8s folder
       run: kubectl apply -f k8s/
