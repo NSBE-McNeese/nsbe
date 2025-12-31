@@ -275,12 +275,12 @@
     "Other"
   ],
   "races": [
-    "Black/African-American",
-    "Hispanic/Latinx",
-    "Native American",
+    "Black/African-American/Afro-Latinx",
+    "Hispanic/Latinx(Non-White)",
+    "Native American/Alaska Native",
     "Asian/Asian-American",
     "White(Non-Hispanic/Latinx)",
-    "Arab/Middle-Eastern",
+    "Middle-Eastern",
     "Other"
   ]
 }

@@ -1,0 +1,217 @@
+/* --- Global Page Layout --- */
+.info-page-container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #f8f9fa; /* Soft grey background */
+  min-height: 100vh;
+  color: #333;
+}
+
+/* --- Headers --- */
+.page-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 30px;
+}
+
+.icon-gold { color: #FFD700; }
+.icon-green { color: #006B3F; }
+
+/* --- Top Stats Boxes (The "allbox" equivalent) --- */
+.stats-row {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  flex: 1;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Soft premium shadow */
+  border-left: 6px solid #006B3F; /* NSBE Green Accent */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #006B3F;
+  margin: 0;
+}
+
+/* --- Main Content Split (The "activity" equivalent) --- */
+.content-split {
+  display: flex;
+  gap: 30px;
+}
+
+/* --- Left Column (Main Content) --- */
+.main-column {
+  flex: 2;
+  background: white;
+  border-radius: 16px;
+  padding: 35px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Mission Statement Box */
+.mission-box {
+  background: #f0f9f4; /* Very light green */
+  padding: 30px;
+  border-radius: 12px;
+  border-left: 4px solid #006B3F;
+  margin-bottom: 30px;
+}
+
+.mission-text {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: #2d3436;
+}
+
+.highlight {
+  color: #006B3F;
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* Steps List (For Help Page) */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.step-item:hover {
+  background: #fafafa;
+}
+
+.step-number {
+  background: #006B3F;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.step-content h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
+.step-content p { margin: 0; color: #666; font-size: 0.95rem; }
+
+/* --- Right Column (Sidebar) --- */
+.side-column {
+  flex: 1;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden; /* Keeps header corners rounded */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  height: fit-content; /* Stops it from stretching too long */
+}
+
+.side-header {
+  background: #006B3F; /* Green Header */
+  padding: 20px 25px;
+  color: white;
+}
+
+.side-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.side-content {
+  padding: 25px;
+}
+
+/* List Items (Pillars / FAQ) */
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  gap: 15px;
+}
+
+.info-icon {
+  color: #FFD700; /* Gold Icons */
+  font-size: 1.5rem !important;
+  margin-top: 2px;
+}
+
+.info-text h3 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.info-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* --- Responsive Mobile --- */
+@media (max-width: 900px) {
+  .stats-row { flex-direction: column; }
+  .content-split { flex-direction: column; }
+  .info-page-container { padding: 20px; }
+}

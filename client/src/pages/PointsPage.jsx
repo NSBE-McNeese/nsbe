@@ -1,102 +1,137 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import EventContext from "../context/EventContext";
 import "./point_page.css";
+
+// Material UI Icons
 import PersonIcon from "@mui/icons-material/Person";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 const PointsPage = () => {
   const { pointsData, fetchPoints } = useContext(EventContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchPoints();
+    // We create a local async function to handle the loading state
+    const loadData = async () => {
+      await fetchPoints();
+      setIsLoading(false);
+    };
+    
+    loadData();
   }, [fetchPoints]);
 
+  // Loading Screen (Prevents the "0 points" flash)
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loader"></div>
+        <p>Loading your points...</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h1>
-        Points <EmojiEventsIcon sx={{ fontSize: "2rem" }}></EmojiEventsIcon>
-      </h1>
-      <div className="allbox">
-        <div className="box1">
-          <h2>Total Points Expected</h2>
-          <div className="number">
-            <p style={{ color: "green" }}>{pointsData.total_points}</p>
+    <div className="points-container">
+      <header className="points-header">
+        <h1>
+          Points <EmojiEventsIcon sx={{ fontSize: "2.5rem", color: "#FFD700" }} />
+        </h1>
+      </header>
+
+      {/* Stats Boxes */}
+      <div className="stats-box-container">
+        <div className="stat-card">
+          <h2>Total Points Earned</h2>
+          <div className="stat-number">
+            <p className="green-text">{pointsData.total_points}</p>
           </div>
         </div>
-        <div className="box2">
-          <h2>Total Events Registered</h2>
-          <div className="number">
-            <p style={{ color: "green" }}>{pointsData.events_attended}</p>
+        
+        <div className="stat-card">
+          <h2>Events Attended</h2>
+          <div className="stat-number">
+            <p className="green-text">{pointsData.events_attended}</p>
           </div>
         </div>
       </div>
-      <div className="activity">
-        <div className="history">
-          <h1 style={{ fontSize: "larger", textDecoration: "solid" }}>
-            Event History{" "}
-            <span>
-              <i className="bx bx-history"></i>
-            </span>
-          </h1>
-          <div className="containevent">
-            {pointsData.member_posts.map((event, index) => (
-              <div key={index} className="event1">
-                <h2 style={{ color: "green", fontSize: "35px" }}>
-                  +{event.points}
-                </h2>
-                <h2 style={{ color: "black", fontSize: "15px" }}>
-                  {new Date(event.start_time).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                  <br />
-                  You attended {event.title}
-                </h2>
+
+      <div className="activity-section">
+        
+        {/* Left Column: Event History */}
+        <div className="history-column">
+          <h2 className="section-title">
+            Event History <i className="bx bx-history"></i>
+          </h2>
+          
+          <div className="event-list">
+            {pointsData.member_posts && pointsData.member_posts.length > 0 ? (
+              pointsData.member_posts.map((event, index) => (
+                <div key={index} className="event-item">
+                  <div className="event-points">
+                    +{event.points}
+                  </div>
+                  <div className="event-details">
+                    <span className="event-date">
+                      {new Date(event.start_time).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric"
+                      })}
+                    </span>
+                    <p className="event-title">
+                      Attended <strong>{event.title}</strong>
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-box">
+                <p>You haven't checked into any events yet.</p>
+                <small>Attend events and scan your QR code to earn points!</small>
               </div>
-            ))}
+            )}
           </div>
         </div>
-        <div className="subBody">
-          <div className="table">
-            <section className="table_header">
-              <h1
-                style={{
-                  fontSize: "large",
-                  textDecoration: "solid",
-                  color: "green",
-                  transform: "translateY(70%)",
-                }}
-              >
-                Points Ranking
-              </h1>
+
+        {/* Right Column: Leaderboard */}
+        <div className="leaderboard-column">
+          <div className="table-container">
+            <section className="table-header">
+              <h2 className="section-title green-text">Top Members</h2>
             </section>
-            <section className="table_body">
+            
+            <section className="table-body">
               <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Member</th>
+                    <th>Points</th>
+                  </tr>
+                </thead>
                 <tbody>
-                  {pointsData.top_members.map((member, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <PersonIcon></PersonIcon> {member.first_name}{" "}
-                        {member.last_name}
-                      </td>
-                      <td
-                        style={{
-                          fontSize: "large",
-                          textDecoration: "solid",
-                          color: "green",
-                        }}
-                      >
-                        {member.pointsum}
-                      </td>
+                  {pointsData.top_members && pointsData.top_members.length > 0 ? (
+                    pointsData.top_members.map((member, index) => (
+                      <tr key={index} className={index < 3 ? "top-three" : ""}>
+                        <td>{index + 1}</td>
+                        <td className="member-name">
+                          <PersonIcon sx={{ fontSize: "1.2rem", marginRight: "5px", color: "#666" }} /> 
+                          {member.first_name} {member.last_name}
+                        </td>
+                        <td className="points-cell">{member.pointsum}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" style={{textAlign: "center"}}>No rankings available yet.</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </section>
           </div>
         </div>
+
       </div>
     </div>
   );

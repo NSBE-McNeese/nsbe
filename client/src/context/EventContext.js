@@ -14,9 +14,13 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [filteredEvents, setFilteredEvents] = useState([]);
+  
   const [isUserRegistered, setIsUserRegistered] = useState({});
+  const [attendanceStatus, setAttendanceStatus] = useState({}); 
+
   const [userID, setUserID] = useState();
   const { authTokens } = useContext(AuthContext);
+  
   const [pointsData, setPointsData] = useState({
     total_points: 0,
     events_attended: 0,
@@ -24,21 +28,7 @@ export const EventProvider = ({ children }) => {
     top_members: [],
   });
 
-  // Fetch points data
-  const fetchPoints = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/points/`, {
-        headers: {
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
-      setPointsData(response.data);
-    } catch (error) {
-      console.error("Error fetching points data:", error);
-    }
-  };
-
-  // Set userID
+  // Setup & Utils
   useEffect(() => {
     if (authTokens) {
       const decoded = jwtDecode(authTokens.access);
@@ -46,149 +36,159 @@ export const EventProvider = ({ children }) => {
     }
   }, [authTokens]);
 
-  // Fetch all events
+  const fetchPoints = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/points/`, {
+        headers: { Authorization: `Bearer ${authTokens.access}` },
+      });
+      setPointsData(response.data);
+    } catch (error) {
+      console.error("Error fetching points:", error);
+    }
+  };
+
+  // Fetch Events List
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/events/`, {
-          headers: {
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        });
-
-        if (response.status === 200) {
-          setEvents(response.data);
-          setFilteredEvents(response.data);
-
-          // Initialize registration
-          const registrationStatus = {};
-          for (const event of response.data) {
-            // Set the status based on whether the user is an attendee
-            registrationStatus[event.slug] = userID
-              ? event.attendees.includes(userID)
-              : false;
-          }
-
-          setIsUserRegistered(registrationStatus);
-          console.log(registrationStatus);
-        } else {
-          console.log("Events not found");
-        }
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchEvents();
   }, [authTokens, userID]);
 
-  // Filter events: Upcoming vs Past
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/events/`, {
+        headers: { Authorization: `Bearer ${authTokens.access}` },
+      });
+
+      if (response.status === 200) {
+        setEvents(response.data);
+        setFilteredEvents(response.data);
+
+        // Map registration status using SLUG
+        const registrationMap = {};
+        for (const event of response.data) {
+          registrationMap[event.slug] = userID ? event.attendees.includes(userID) : false;
+        }
+        setIsUserRegistered(registrationMap);
+      }
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter Logic
   useEffect(() => {
-    if (authTokens) {
-      const decoded = jwtDecode(authTokens.access);
-      setUserID(decoded.user_id);
-    }
-
     if (isUpcoming) {
-      setFilteredEvents(
-        events.filter((event) => new Date(event.end_time) >= new Date()),
-      );
+      setFilteredEvents(events.filter((event) => new Date(event.end_time) >= new Date()));
     } else {
-      setFilteredEvents(
-        events.filter((event) => new Date(event.end_time) < new Date()),
-      );
+      setFilteredEvents(events.filter((event) => new Date(event.end_time) < new Date()));
     }
-  }, [authTokens, events, isUpcoming]);
+  }, [events, isUpcoming]);
 
-  // Register a user to an event
-  const handleRegistration = async (event_slug) => {
+
+  // Check Status
+  const checkAttendanceStatus = async (slug) => {
+  try {
+    const res = await axios.get(`${baseURL}/events/${slug}/attendance/`, {
+      headers: { Authorization: `Bearer ${authTokens.access}` },
+    });
+    
+    setAttendanceStatus((prev) => ({ 
+      ...prev, 
+      [slug]: {
+        is_registered: res.data.is_registered || false,
+        qr_token: res.data.qr_token || null,
+        is_approved: res.data.is_approved || false, 
+        status: res.data.status || 'pending' 
+      }
+    }));
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      setAttendanceStatus((prev) => ({ 
+        ...prev, 
+        [slug]: { 
+          is_registered: false, 
+          qr_token: null, 
+          is_approved: false,
+          status: 'not_registered'
+        } 
+      }));
+    }
+  }
+};
+  // Register
+  const handleRegistration = async (slug) => {
     try {
-      const response = await axios.post(
-        `${baseURL}/events/${event_slug}/register/`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        },
-      );
+      const response = await axios.post(`${baseURL}/events/${slug}/attendance/`, {}, {
+        headers: { Authorization: `Bearer ${authTokens.access}` },
+      });
 
-      if (response.status === 200) {
-        console.log(response.data.message);
-        toast.success(response.data.message);
-        setIsUserRegistered((prev) => ({ ...prev, [event_slug]: true }));
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Registration Successful!");
+        setAttendanceStatus((prev) => ({
+          ...prev,
+          [slug]: { is_registered: true, qr_token: response.data.qr_token }
+        }));
+        setIsUserRegistered((prev) => ({ ...prev, [slug]: true }));
       }
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        console.log("User is already registered.");
-        toast.error("You are already registered to this event.");
-      } else {
-        console.error("Error during registration:", error.message);
-        toast.error("Registration failed.");
-      }
+      toast.error("Registration failed.");
     }
   };
 
-  // Unregister a user to an event
-  const handleUnregistration = async (event_slug) => {
+  // Unregister
+  const handleUnregistration = async (slug) => {
     try {
-      const response = await axios.post(
-        `${baseURL}/events/${event_slug}/unregister/`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        },
-      );
+      const response = await axios.delete(`${baseURL}/events/${slug}/attendance/`, {
+        headers: { Authorization: `Bearer ${authTokens.access}` },
+      });
 
       if (response.status === 200) {
-        console.log(response.data.message);
-        toast.success(response.data.message);
-        setIsUserRegistered((prev) => ({ ...prev, [event_slug]: false }));
+        toast.info("Unregistered successfully.");
+        setAttendanceStatus((prev) => ({
+          ...prev,
+          [slug]: { is_registered: false, qr_token: null }
+        }));
+        setIsUserRegistered((prev) => ({ ...prev, [slug]: false }));
       }
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        console.log("User is not registered.");
-        toast.error("You are not registered to this event.");
-      } else {
-        console.error("Error during unregistration:", error.message);
-        toast.error("Unregistration failed.");
-      }
+      toast.error("Unregistration failed.");
     }
   };
 
-  // Fetch a single event
+  // Single Event Fetch
   const [eventDetail, setEventDetail] = useState(null);
+  
   const fetchEvent = async (event_slug) => {
     try {
       const response = await axios.get(`${baseURL}/events/${event_slug}/`, {
-        headers: {
-          Authorization: `Bearer ${authTokens.access}`,
-        },
+        headers: { Authorization: `Bearer ${authTokens.access}` },
       });
 
       if (response.status === 200) {
         setEventDetail(response.data);
-      } else {
-        console.log("Event not found");
+        // Use the slug we just fetched (or the one passed in)
+        if(response.data?.slug) {
+          checkAttendanceStatus(response.data.slug);
+        }
       }
     } catch (error) {
-      console.log(error.message);
+      console.log("Event fetch error:", error.message);
     }
   };
 
   const contextData = {
+    loading,
     events,
     filteredEvents,
     isUpcoming,
     setIsUpcoming,
-    handleRegistration,
-    handleUnregistration,
-    isUserRegistered,
     eventDetail,
     fetchEvent,
+    isUserRegistered,
+    attendanceStatus,
+    handleRegistration,
+    handleUnregistration,
     pointsData,
     fetchPoints,
   };

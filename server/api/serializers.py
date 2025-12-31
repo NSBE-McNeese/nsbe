@@ -1,14 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User, Event
+from .models import *
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework_simplejwt.tokens import AccessToken
 import logging
 import uuid
 from django.utils import timezone
-from address.models import Address
 
 logger = logging.getLogger(__name__)
 
@@ -148,16 +147,50 @@ class PasswordResetSerializer(serializers.ModelSerializer):
 
         return instance
 
-
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = ['raw', 'street_number', 'route', 'locality']
-
 class EventSerializer(serializers.ModelSerializer):
     attendees = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    location = AddressSerializer(read_only=True)
+    check_in_code = serializers.SerializerMethodField()
+    
+    def get_check_in_code(self, obj):
+        request = self.context.get("request")
+
+        if request and request.user.is_staff:
+            return obj.check_in_code
+        return None
     
     class Meta:
         model = Event
-        fields = ["slug", "title", "description", "location", "start_time", "end_time", "attendees"]
+        fields = [
+            "slug", "title", "description", 
+            "location", "address", "latitude", "longitude", 
+            "start_time", "end_time", "attendees", "check_in_code" 
+        ]
+
+class DirectorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'major', 'class_standing']
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 
+            'last_name', 
+            'email',  
+            'major', 
+            'class_standing', 
+            'gender', 
+            'race', 
+            'nationality', 
+            'phone',
+            'linkedin',
+            'birthdate'
+        ]
+        # Prevent any updates to email
+        read_only_fields = ['email']
+
+class EventAttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventAttendance
+        fields = ['id', 'event', 'qr_token', 'registered_at', 'checked_in_at']

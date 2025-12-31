@@ -1,0 +1,37 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    # 1. Authenticate to Google Cloud
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    # 2. Configure Docker to use gcloud command-line tool as a credential helper
+    - name: Docker Auth
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    # 3. Build & Push Backend
+    - name: Build Backend
+      run: |
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/nsbe-app-repo/backend:latest ./backend
+        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/nsbe-app-repo/backend:latest
+
+    # 4. Deploy to GKE
+    - name: Get GKE Credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: nsbe-cluster
+        location: us-central1-a
+
+    - name: Apply K8s Manifests
+      run: kubectl apply -f k8s/

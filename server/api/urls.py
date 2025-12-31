@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from api import views
 
@@ -17,5 +17,10 @@ urlpatterns = [
     path('events/<slug:slug>/', views.EventDetail.as_view(), name="event"),
     path('events/<slug:slug>/register/', views.EventRegister.as_view(), name='event_register'),  
     path('events/<slug:slug>/unregister/', views.EventUnregister.as_view(), name='event_unregister'),  
-    path('points/', views.Points.as_view(), name="points")
+    path('dashboard/', views.DashboardView.as_view(), name="dashboard"),
+    path('directory/', views.DirectoryListView.as_view(), name='directory-list'),
+    path('profile/update/', views.UserProfileUpdateView.as_view(), name='profile-update'),
+    path('events/<int:event_id>/attendance/', views.UserEventActionView.as_view(), name='event-attendance'),
+    path('check-in/', views.AdminScanView.as_view(), name='admin-check-in'),
+    path('events/<slug:slug>/attendance/', views.UserEventActionView.as_view(), name='event-attendance'),
 ]
