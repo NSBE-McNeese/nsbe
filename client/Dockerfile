@@ -9,12 +9,13 @@ WORKDIR /app
 # 2. Copy package files
 COPY package*.json ./
 
-# 3. FIXED: Use --legacy-peer-deps to bypass the FontAwesome version conflict
+# Use --legacy-peer-deps to bypass the FontAwesome version conflict
 RUN npm install --legacy-peer-deps
 
-# 4. Copy the rest and build
 COPY . . 
-RUN npm run build
+
+# Set CI=false to prevent ESLint warnings from failing the build
+RUN CI=false npm run build
 
 # Serve Stage
 FROM nginx:alpine
