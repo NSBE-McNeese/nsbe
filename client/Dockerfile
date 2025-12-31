@@ -1,28 +1,22 @@
 # Build Stage
 FROM node:18-alpine AS builder
 
+# 1. System dependencies
 RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
+# 2. Copy package files
 COPY package*.json ./
 
-RUN npm install --loglevel error || (npm install --verbose && exit 1)
-
-COPY . . 
-RUN npm run build
-
-# Serve Stage 
-FROM nginx:alpine
-COPY package*.json ./
-
-RUN npm install --loglevel error || (npm install --verbose && exit 1)
+# 3. FIXED: Use --legacy-peer-deps to bypass the FontAwesome version conflict
+RUN npm install --legacy-peer-deps
 
 # 4. Copy the rest and build
 COPY . . 
 RUN npm run build
 
-# Serve Stage 
+# Serve Stage
 FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
 EXPOSE 80
