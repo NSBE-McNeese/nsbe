@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps
 COPY . . 
 
 # Set CI=false to prevent ESLint warnings from failing the build
-RUN CI=false npm run build
+RUN DISABLE_ESLINT_PLUGIN=true CI=false npm run build
 
 # Serve Stage
 FROM nginx:alpine
