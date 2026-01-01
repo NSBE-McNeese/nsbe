@@ -1,0 +1,83 @@
+name: Code Formatting Check and Auto-Format
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install Black
+        run: pip install black
+
+      - name: Check Python formatting with Black
+        run: black server/ --check --line-length 100 || true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "client/package-lock.json"
+
+      - name: Install dependencies
+        run: cd client && npm install --legacy-peer-deps
+
+      - name: Check JavaScript/CSS formatting with Prettier
+        run: cd client && npm run format:check || true
+
+  auto-format:
+    needs: format-check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install Black
+        run: pip install black
+
+      - name: Format Python with Black
+        run: black server/ --line-length 100
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "client/package-lock.json"
+
+      - name: Install dependencies
+        run: cd client && npm install --legacy-peer-deps
+
+      - name: Format JavaScript/CSS with Prettier
+        run: cd client && npm run format
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git diff --quiet && git diff --staged --quiet || (git commit -m "style: auto-format code with Black and Prettier" && git push)

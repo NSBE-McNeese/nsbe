@@ -1,58 +1,58 @@
 import React, { useState, useContext } from "react";
-import { QrReader } from 'react-qr-reader';
-import axios from "axios";
+import { QrReader } from "react-qr-reader";
 import AuthContext from "../context/AuthContext";
-import { 
-  Container, Box, Typography, Paper, Alert, Button, TextField, Divider 
+import useAxios from "../utils/useAxios";
+import {
+  Container,
+  Box,
+  Typography,
+  Paper,
+  Alert,
+  Button,
+  TextField,
+  Divider,
+  CircularProgress,
 } from "@mui/material";
-import { api } from "../api";
 
 const AdminScanner = () => {
+  const api = useAxios();
   const { authTokens } = useContext(AuthContext);
-  const [scanResult, setScanResult] = useState(null); 
+  const [scanResult, setScanResult] = useState(null);
   const [manualCode, setManualCode] = useState("");
   const [isScanning, setIsScanning] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  
   const handleCheckIn = async (token) => {
-    // Stop scanning temporarily so we don't spam the API
+    if (!token) return;
     setIsScanning(false);
+    setLoading(true);
 
     try {
-      const response = await api.post(
-        "/check-in/",
-        { qr_token: token },
-        {
-          headers: { Authorization: `Bearer ${authTokens.access}` },
-        }
-      );
-      
-      // SUCCESS
-      setScanResult({ 
-        success: true, 
-        message: response.data.message, 
-        user: response.data.user,
-        points: response.data.points_added 
+      const response = await api.post("/check-in/", { qr_token: token });
+
+      setScanResult({
+        success: true,
+        message: response.data.message || "Check-in successful",
+        user: response.data.user || "Member",
+        points: response.data.points_added || 0,
       });
-
     } catch (error) {
-      // ERROR
-      const errorMsg = error.response?.data?.error || "Scan Failed";
+      const errorMsg = error.response?.data?.error || "Invalid Token or System Error";
       setScanResult({ success: false, message: errorMsg });
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handler for Camera Scan
   const onScan = (result, error) => {
-    if (!!result && isScanning) {
-      handleCheckIn(result?.text);
+    if (result && isScanning) {
+      handleCheckIn(result.text);
     }
   };
 
-  // Handler for Manual Input
   const onManualSubmit = (e) => {
     e.preventDefault();
-    if(manualCode) handleCheckIn(manualCode);
+    handleCheckIn(manualCode);
   };
 
   const resetScanner = () => {
@@ -63,63 +63,87 @@ const AdminScanner = () => {
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
-      <Typography variant="h4" fontWeight="bold" align="center" gutterBottom>
-        Event Check-In
+      <Typography variant="h4" fontWeight="bold" align="center" gutterBottom color="#00205B">
+        Admin Event Check-In
       </Typography>
 
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2, textAlign: 'center' }}>
-        
-        {/* RESULT AREA */}
-        {scanResult ? (
-          <Box sx={{ my: 4 }}>
-            {scanResult.success ? (
-              <Alert severity="success" variant="filled" sx={{ justifyContent: 'center' }}>
-                <Typography variant="h6">CHECK-IN SUCCESSFUL</Typography>
-                <Typography variant="body1">Welcome, {scanResult.user}!</Typography>
-                {scanResult.points > 0 && <Typography variant="caption">Points Added: {scanResult.points}</Typography>}
-              </Alert>
-            ) : (
-              <Alert severity="error" variant="filled" sx={{ justifyContent: 'center' }}>
-                <Typography variant="h6">ACCESS DENIED</Typography>
-                <Typography variant="body1">{scanResult.message}</Typography>
-              </Alert>
-            )}
+      <Paper elevation={4} sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
+        {loading && <CircularProgress sx={{ mb: 2 }} />}
 
-            <Button 
-              variant="contained" 
-              size="large" 
-              onClick={resetScanner} 
-              sx={{ mt: 3, bgcolor: '#00205B' }}
+        {scanResult ? (
+          <Box sx={{ my: 2 }}>
+            <Alert
+              severity={scanResult.success ? "success" : "error"}
+              variant="filled"
+              sx={{ py: 2, borderRadius: 2, "& .MuiAlert-message": { width: "100%" } }}
             >
-              Scan Next Person
+              <Typography variant="h6" fontWeight="bold">
+                {scanResult.success ? "SUCCESSFUL" : "FAILED"}
+              </Typography>
+              <Typography variant="body1">{scanResult.message}</Typography>
+              {scanResult.user && (
+                <Typography variant="subtitle2">Member: {scanResult.user}</Typography>
+              )}
+            </Alert>
+
+            <Button
+              variant="contained"
+              fullWidth
+              size="large"
+              onClick={resetScanner}
+              sx={{ mt: 4, bgcolor: "#00205B", py: 1.5, fontWeight: "bold" }}
+            >
+              Scan Next
             </Button>
           </Box>
         ) : (
-          /* SCANNING AREA */
           <>
-            <Box sx={{ height: 300, bgcolor: "#000", mb: 3, borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
-               <QrReader
-                  onResult={onScan}
-                  constraints={{ facingMode: 'environment' }}
-                  style={{ width: '100%' }}
-               />
-               <Typography sx={{ position: 'absolute', bottom: 10, left: 0, right: 0, color: 'white', zIndex: 10 }}>
-                 Point Camera at QR Code
-               </Typography>
+            <Box
+              sx={{
+                width: "100%",
+                bgcolor: "#000",
+                mb: 3,
+                borderRadius: 3,
+                overflow: "hidden",
+                position: "relative",
+                aspectRatio: "1/1",
+              }}
+            >
+              <QrReader
+                onResult={onScan}
+                constraints={{ facingMode: "environment" }}
+                containerStyle={{ width: "100%" }}
+                videoStyle={{ width: "100%", height: "100%" }}
+              />
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  bgcolor: "rgba(0,0,0,0.6)",
+                  color: "white",
+                  py: 1,
+                  zIndex: 10,
+                }}
+              >
+                <Typography variant="caption">Align QR Code within frame</Typography>
+              </Box>
             </Box>
 
-            <Divider>OR</Divider>
-            
-            {/* Manual Entry (For testing without camera) */}
-            <Box component="form" onSubmit={onManualSubmit} sx={{ mt: 2, display: 'flex', gap: 1 }}>
-              <TextField 
-                fullWidth 
-                label="Enter UUID Manually" 
+            <Divider sx={{ my: 2 }}>OR MANUAL ENTRY</Divider>
+
+            <Box component="form" onSubmit={onManualSubmit} sx={{ mt: 2, display: "flex", gap: 1 }}>
+              <TextField
+                fullWidth
+                label="Member UUID"
                 value={manualCode}
                 onChange={(e) => setManualCode(e.target.value)}
-                size="small"
+                variant="outlined"
               />
-              <Button type="submit" variant="outlined">Check In</Button>
+              <Button type="submit" variant="contained" sx={{ bgcolor: "#00205B" }}>
+                Go
+              </Button>
             </Box>
           </>
         )}

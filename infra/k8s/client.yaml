@@ -14,11 +14,9 @@ spec:
     spec:
       containers:
       - name: frontend
-        # FIXED: Added "-app-" to the project ID
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/frontend:latest
         ports:
         - containerPort: 80
-        # NVIDIA Pro-tip: Resource management
         resources:
           requests:
             memory: "64Mi"

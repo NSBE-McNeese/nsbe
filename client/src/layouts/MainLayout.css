@@ -1,21 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
-  background-repeat: no-repeat;
-  background-position: 60% 20%;
-  background-size: 600px 600px;
-  background-attachment: fixed;
-    font-family: "Outfit", sans-serif;
-  -webkit-font-smoothing: antialiased; 
+  font-family: "Outfit", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .main-layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   background: #f3f5f9;
   background-image: url("../logo/msu_horse_logo_trans3.png");
   background-repeat: no-repeat;
@@ -31,9 +27,10 @@
   top: 0;
   left: 0;
   height: 100%;
-  overflow-x: hidden; 
-  white-space: nowrap; 
-  z-index: 1000; 
+  overflow-x: hidden;
+  white-space: nowrap;
+  z-index: 1000;
+  background: #fff;
 }
 
 .navbar-container.closed {
@@ -44,10 +41,12 @@
   margin-left: 170px;
   flex-grow: 1;
   padding: 20px;
+  width: calc(100% - 170px);
 }
 
 .main-content.noNavbar {
   margin-left: 0;
+  width: 100%;
 }
 
 @media (max-width: 768px) {

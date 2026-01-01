@@ -26,31 +26,26 @@ import AuthLayout from "./layouts/AuthLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { ThemeProvider, CssBaseline } from "@mui/material"; 
-import theme from "./theme";  
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme";
 
 function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ToastContainer />
+        <ToastContainer position="top-right" autoClose={3000} />
         <AuthProvider>
           <EventProvider>
             <Routes>
-              {/* Public routes */}
               <Route element={<AuthLayout />}>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/verify" element={<VerifyEmail />} />
-                <Route
-                  path="/password-reset-request"
-                  element={<PasswordResetRequest />}
-                />
+                <Route path="/password-reset-request" element={<PasswordResetRequest />} />
                 <Route path="/password-reset" element={<PasswordReset />} />
               </Route>
 
-              {/* Private routes */}
               <Route
                 element={
                   <PrivateRoute>
@@ -60,7 +55,7 @@ function App() {
               >
                 <Route path="/" element={<HomePage />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/directory" element={<DirectoryPage />} />  
+                <Route path="/directory" element={<DirectoryPage />} />
                 <Route path="/events" element={<EventsPage />} />
                 <Route path="/events/:event_slug" element={<EventDetail />} />
                 <Route path="/points" element={<PointsPage />} />
@@ -68,7 +63,6 @@ function App() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/help" element={<HelpPage />} />
               </Route>
-              
             </Routes>
           </EventProvider>
         </AuthProvider>

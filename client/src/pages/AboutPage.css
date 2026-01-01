@@ -1,6 +1,6 @@
 /* --- Global Container --- */
 .info-page-container {
-  font-family: 'Segoe UI', 'Roboto', Helvetica, sans-serif;
+  font-family: "Segoe UI", "Roboto", Helvetica, sans-serif;
   background-color: #f4f6f8;
   min-height: 100vh;
   padding-bottom: 80px;
@@ -32,7 +32,7 @@
 
 .hero-subtitle {
   font-size: 1.3rem;
-  color: #FFD700; /* NSBE Gold */
+  color: #ffd700; /* NSBE Gold */
   margin-bottom: 20px;
 }
 
@@ -59,8 +59,8 @@
   background: white;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border-top: 5px solid #FFD700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #ffd700;
 }
 
 .mission-text {
@@ -91,7 +91,7 @@
   padding: 25px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
 }
 
@@ -107,7 +107,7 @@
 
 .torch-section {
   background: #111;
-  color: #FFD700;
+  color: #ffd700;
   padding: 40px;
   border-radius: 12px;
   text-align: center;
@@ -134,7 +134,7 @@
   background: white;
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
   margin-bottom: 30px;
 }
 
@@ -145,7 +145,7 @@
 .card-icon {
   vertical-align: bottom;
   margin-right: 10px;
-  color: #FFD700;
+  color: #ffd700;
 }
 
 .help-steps {
@@ -223,8 +223,16 @@
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-  .hero-overlay h1 { font-size: 2rem; }
-  .dues-grid { grid-template-columns: 1fr; }
-  .info-content { margin-top: 0; }
-  .about-hero { padding-bottom: 40px; }
+  .hero-overlay h1 {
+    font-size: 2rem;
+  }
+  .dues-grid {
+    grid-template-columns: 1fr;
+  }
+  .info-content {
+    margin-top: 0;
+  }
+  .about-hero {
+    padding-bottom: 40px;
+  }
 }

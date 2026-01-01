@@ -29,15 +29,17 @@
   background: #fff;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   border: 1px solid #f0f0f0;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
 .stat-card h2 {
@@ -70,7 +72,7 @@
 /* Responsive: Stack on mobile */
 @media (max-width: 900px) {
   .activity-section {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
 }
 
@@ -95,7 +97,7 @@
   background: white;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   border-left: 6px solid #2e7d32;
   transition: background-color 0.2s;
 }
@@ -145,7 +147,7 @@
 .table-container {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden; /* Rounds corners of the table */
   border: 1px solid #f0f0f0;
 }
@@ -203,7 +205,7 @@ tr:last-child td {
 }
 
 .top-three {
-  background-color: rgba(46, 125, 50, 0.03); 
+  background-color: rgba(46, 125, 50, 0.03);
 }
 
 /* Loading State */
@@ -227,11 +229,21 @@ tr:last-child td {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

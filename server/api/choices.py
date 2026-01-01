@@ -294,9 +294,7 @@ COUNTRY_CHOICES = [(country, country) for country in countries]
 GENDER_CHOICES = [(gender, gender) for gender in genders]
 
 
-CLASS_STANDING_CHOICES = [
-    (class_standing, class_standing) for class_standing in class_standings
-]
+CLASS_STANDING_CHOICES = [(class_standing, class_standing) for class_standing in class_standings]
 
 
 RACE_CHOICES = [(race, race) for race in races]

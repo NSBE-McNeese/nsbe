@@ -11,7 +11,7 @@ const Password = ({
   onChange,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
- 
+
   return (
     <Box mb={2} sx={{ display: "flex", position: "relative", top: "10px" }}>
       <TextField

@@ -28,15 +28,7 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password === password2) {
-      registerUser(
-        first_name,
-        last_name,
-        major,
-        class_standing,
-        email,
-        password,
-        password2,
-      );
+      registerUser(first_name, last_name, major, class_standing, email, password, password2);
     }
   };
 
@@ -90,9 +82,7 @@ const RegisterPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 error={password && password.length < 8}
                 helperText={
-                  password && password.length < 8
-                    ? "Password must be at least 8 characters."
-                    : ""
+                  password && password.length < 8 ? "Password must be at least 8 characters." : ""
                 }
               />
             </Grid>
@@ -103,9 +93,7 @@ const RegisterPage = () => {
                 autoComplete="new-password"
                 label="Confirm Password"
                 onChange={(e) => setPassword2(e.target.value)}
-                error={
-                  password2 && (password2.length < 8 || password !== password2)
-                }
+                error={password2 && (password2.length < 8 || password !== password2)}
                 helperText={
                   password2 && password2.length < 8
                     ? "Password must be at least 8 characters."

@@ -5,7 +5,6 @@ from environ import Env
 
 # Initialize environ
 env = Env()
-# Read .env file if it exists
 Env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,7 +14,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 # Application definition
 INSTALLED_APPS = [
-    "api", 
+    "api",
     "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -24,16 +23,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "core",
-    'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
-    'corsheaders', 
-    'address',
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
+    "address",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware", 
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -63,8 +63,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DB_NAME", default="nsbe_db"),
+        "USER": env("DB_USER", default="postgres"),
+        "PASSWORD": env("DB_PASSWORD", default=""),
+        "HOST": env("DB_HOST", default="localhost"),
+        "PORT": env("DB_PORT", default="5432"),
     }
 }
 
@@ -84,38 +88,38 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = "api.User"
 
-# CORS SETTINGS 
-CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOWED_ORIGINS = env.list(
+    "CORS_ALLOWED_ORIGINS",
+    default=[
+        "http://localhost:3000",
+        "http://localhost:80",
+    ],
+)
 
 REST_FRAMEWORK = {
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-      ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=50),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'HS256',
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=50),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
 }
 
 # MAIL SETTINGS
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="paccysan@gmail.com")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="") 
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 
 GOOGLE_API_KEY = env("GOOGLE_API_KEY", default="")
-
-# kubectl exec -it backend-7f6c98d6cb-pvmv8 -- python manage.py migrate
-# kubectl exec -it backend-77c9c8dbd9-nhbnx -- python manage.py createsuperuser
-# backend-77c9c8dbd9-nhbnx    0/1     Running   27 (6m56s ago)   116m
-# backend-7f6c98d6cb-pvmv8

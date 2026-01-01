@@ -11,8 +11,7 @@ import Login from "../../components/authFields/CallToActionText/Login";
 import SignUp from "../../components/authFields/CallToActionText/SignUp";
 
 const PasswordResetRequest = () => {
-  const { user, passwordResetRequest, setVerifiedUserEmail } =
-    useContext(AuthContext);
+  const { user, passwordResetRequest, setVerifiedUserEmail } = useContext(AuthContext);
   const [email, setEmail] = useState(user ? user.email : "");
 
   useEffect(() => {

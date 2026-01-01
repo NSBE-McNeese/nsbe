@@ -2,7 +2,6 @@ import React, { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
 import api from "../api";
 
 const AuthContext = createContext();
@@ -10,22 +9,14 @@ export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
   const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
-      : null,
+    localStorage.getItem("authTokens") ? JSON.parse(localStorage.getItem("authTokens")) : null
   );
 
   const [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? jwtDecode(localStorage.getItem("authTokens"))
-      : null,
+    localStorage.getItem("authTokens") ? jwtDecode(localStorage.getItem("authTokens")) : null
   );
 
   const [verifiedEmail, setVerifiedEmail] = useState("");
-  const setVerifiedUserEmail = (email) => {
-    setVerifiedEmail(email);
-  };
-
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -50,7 +41,6 @@ export const AuthProvider = ({ children }) => {
         toast.error("Invalid username and/or password");
       }
     } catch (error) {
-      console.error("Login error:", error);
       toast.error("An error occurred during login. Please try again.");
     }
   };
@@ -62,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     class_standing,
     email,
     password,
-    password2,
+    password2
   ) => {
     try {
       const { status } = await api.post(`auth/register/`, {
@@ -82,7 +72,6 @@ export const AuthProvider = ({ children }) => {
         toast.error("An error occurred during registration.");
       }
     } catch (error) {
-      console.error("Registration error:", error);
       toast.error("System error. Please try again later.");
     }
   };
@@ -94,22 +83,18 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (status === 200) {
-        console.log(data);
-        // Set the verified user's email
         setVerifiedUserEmail(data.user.email);
-
         if (data.action === "register") {
           navigate("/login");
         } else if (data.action === "password_reset") {
           navigate("/password-reset");
         }
-      } else {
-        console.error("Email verification failed.");
       }
     } catch (error) {
-      console.error("Email verification error:", error);
+      console.error("Verification error:", error);
     }
   };
+
   const passwordResetRequest = async (email) => {
     try {
       const response = await api.post(`auth/password-reset-request/`, {
@@ -119,7 +104,6 @@ export const AuthProvider = ({ children }) => {
       return response.data;
     } catch (error) {
       toast.error("Failed to send password reset email. Please try again.");
-      console.error(error);
     }
   };
 
@@ -135,15 +119,12 @@ export const AuthProvider = ({ children }) => {
       if (status === 200) {
         toast.success("Password changed successfully!");
         navigate("/login");
-        return { message: "Password changed successfully! You can log in." };
-      } else {
-        toast.error("Password change failed");
-        return { message: "Password change failed. Try again!" };
+        return { message: "Password changed successfully!" };
       }
+      return { message: "Password change failed." };
     } catch (error) {
-      toast.error("Password change failed ", error);
-      console.error("Password change error:", error);
-      return { message: "An error occurred. Try again!" };
+      toast.error("An error occurred. Try again!");
+      return { message: "An error occurred." };
     }
   };
 
@@ -165,7 +146,7 @@ export const AuthProvider = ({ children }) => {
     passwordReset,
     passwordResetRequest,
     verifiedEmail,
-    setVerifiedUserEmail,
+    setVerifiedUserEmail: setVerifiedEmail,
   };
 
   useEffect(() => {
@@ -176,8 +157,6 @@ export const AuthProvider = ({ children }) => {
   }, [authTokens]);
 
   return (
-    <AuthContext.Provider value={contextData}>
-      {loading ? null : children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>{loading ? null : children}</AuthContext.Provider>
   );
 };

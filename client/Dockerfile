@@ -14,6 +14,10 @@ RUN npm install --legacy-peer-deps
 
 COPY . . 
 
+# Build arguments
+ARG REACT_APP_API_URL=http://localhost:8000/api
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # Set CI=false to prevent ESLint warnings from failing the build
 RUN DISABLE_ESLINT_PLUGIN=true CI=false npm run build
 

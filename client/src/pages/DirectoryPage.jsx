@@ -13,14 +13,14 @@ import {
   Chip,
   LinearProgress,
   Tooltip,
-} from "@mui/material"; // Removed IconButton/Link to use native HTML
+} from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
 import EmailIcon from "@mui/icons-material/Email";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import SchoolIcon from "@mui/icons-material/School";
 
-import { api } from "../api";
+import api from "../api";
 
 const DirectoryPage = () => {
   const { authTokens, user } = useContext(AuthContext);
@@ -31,7 +31,7 @@ const DirectoryPage = () => {
   const getAvatarUrl = (avatarPath) => {
     if (!avatarPath) return null;
     if (avatarPath.startsWith("http")) return avatarPath;
-    return `http://127.0.0.1:8000${avatarPath}`;
+    return `${process.env.REACT_APP_API_URL?.replace("/api", "") || ""}${avatarPath}`;
   };
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const DirectoryPage = () => {
         });
 
         const data = await response.json();
-        
+
         if (Array.isArray(data)) {
           setMembers(data);
         } else if (data.results && Array.isArray(data.results)) {
@@ -55,7 +55,6 @@ const DirectoryPage = () => {
         } else {
           setMembers([]);
         }
-
       } catch (error) {
         console.error("Error fetching members:", error);
       } finally {
@@ -73,7 +72,7 @@ const DirectoryPage = () => {
     const firstName = member.first_name || (member.user && member.user.first_name) || "";
     const lastName = member.last_name || (member.user && member.user.last_name) || "";
     const major = member.major || "";
-    
+
     const fullName = `${firstName} ${lastName}`.toLowerCase();
     const term = searchTerm.toLowerCase();
 
@@ -93,21 +92,20 @@ const DirectoryPage = () => {
     transition: "background-color 0.2s",
     cursor: "pointer",
     position: "relative",
-    zIndex: 10, 
+    zIndex: 10,
   };
 
   return (
     <Box sx={{ bgcolor: "#f8f9fa", minHeight: "100vh", pb: 8 }}>
-      
       {/* Header */}
-      <Box 
-        sx={{ 
-          background: "linear-gradient(135deg, #005090 0%, #003366 100%)", 
-          py: 6, 
+      <Box
+        sx={{
+          background: "linear-gradient(135deg, #005090 0%, #003366 100%)",
+          py: 6,
           px: 2,
           mb: 4,
           textAlign: "center",
-          color: "white"
+          color: "white",
         }}
       >
         <Container maxWidth="md">
@@ -128,7 +126,7 @@ const DirectoryPage = () => {
               bgcolor: "white",
               borderRadius: 2,
               "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "transparent" } },
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
             }}
             InputProps={{
               startAdornment: (
@@ -147,38 +145,38 @@ const DirectoryPage = () => {
           {filteredMembers.map((member) => {
             const emailAddress = member.email || (member.user && member.user.email);
             const linkedInUrl = member.linkedin || (member.user && member.user.linkedin);
-            
+
             return (
               <Grid item xs={12} sm={6} md={4} lg={3} key={member.id || Math.random()}>
-                <Card 
-                  sx={{ 
-                    height: "100%", 
-                    display: "flex", 
-                    flexDirection: "column", 
+                <Card
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
                     borderRadius: 3,
                     position: "relative",
                     zIndex: 1,
                     transition: "transform 0.2s, box-shadow 0.2s",
                     "&:hover": {
                       transform: "translateY(-4px)",
-                      boxShadow: "0 12px 24px rgba(0,0,0,0.1)"
-                    }
+                      boxShadow: "0 12px 24px rgba(0,0,0,0.1)",
+                    },
                   }}
                 >
                   <CardContent sx={{ flexGrow: 1, textAlign: "center", pt: 4 }}>
                     <Avatar
                       src={getAvatarUrl(member.avatar)}
-                      sx={{ 
-                        width: 80, 
-                        height: 80, 
-                        margin: "0 auto", 
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        margin: "0 auto",
                         mb: 2,
                         bgcolor: "#e3f2fd",
                         color: "#1565c0",
                         fontSize: "2rem",
                         fontWeight: "bold",
                         border: "3px solid white",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                       }}
                     >
                       {member.first_name ? member.first_name[0] : ""}
@@ -188,38 +186,45 @@ const DirectoryPage = () => {
                     <Typography variant="h6" fontWeight="bold" color="primary.main" gutterBottom>
                       {member.first_name} {member.last_name}
                     </Typography>
-                    
+
                     <Box mb={2} display="flex" justifyContent="center" gap={1} flexWrap="wrap">
                       {member.major && (
-                        <Chip 
-                          icon={<SchoolIcon fontSize="small" />} 
-                          label={member.major} 
-                          size="small" 
+                        <Chip
+                          icon={<SchoolIcon fontSize="small" />}
+                          label={member.major}
+                          size="small"
                           sx={{ bgcolor: "#f1f3f4", fontWeight: 500 }}
                         />
                       )}
                       {member.class_standing && (
-                        <Chip 
-                          label={member.class_standing} 
-                          size="small" 
-                          variant="outlined" 
+                        <Chip
+                          label={member.class_standing}
+                          size="small"
+                          variant="outlined"
                           color="primary"
                         />
                       )}
                     </Box>
 
                     {/* ACTION BUTTONS: Native HTML Links */}
-                    <Box sx={{ borderTop: "1px solid #f0f0f0", mt: 2, pt: 2, display: "flex", justifyContent: "center", gap: 2 }}>
-                      
-                      {/* 1. EMAIL LINK */}
+                    <Box
+                      sx={{
+                        borderTop: "1px solid #f0f0f0",
+                        mt: 2,
+                        pt: 2,
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                      }}
+                    >
                       {emailAddress && (
                         <Tooltip title="Send Email">
-                          <a 
+                          <a
                             href={`mailto:${emailAddress}`}
-                            style={{ 
-                              ...iconButtonStyle, 
-                              backgroundColor: "#fce8e6", 
-                              color: "#ea4335" 
+                            style={{
+                              ...iconButtonStyle,
+                              backgroundColor: "#fce8e6",
+                              color: "#ea4335",
                             }}
                           >
                             <EmailIcon fontSize="small" />
@@ -227,17 +232,16 @@ const DirectoryPage = () => {
                         </Tooltip>
                       )}
 
-                      {/* 2. LINKEDIN LINK */}
                       {linkedInUrl && (
                         <Tooltip title="Connect on LinkedIn">
-                          <a 
+                          <a
                             href={linkedInUrl}
-                            target="_blank" 
+                            target="_blank"
                             rel="noopener noreferrer"
-                            style={{ 
-                              ...iconButtonStyle, 
-                              backgroundColor: "#e1f5fe", 
-                              color: "#0077b5" 
+                            style={{
+                              ...iconButtonStyle,
+                              backgroundColor: "#e1f5fe",
+                              color: "#0077b5",
                             }}
                           >
                             <LinkedInIcon fontSize="small" />

@@ -21,7 +21,7 @@ const MainLayout = () => {
 
       {/* Main content */}
       <div className={`main-content ${isNavbarOpen ? "" : "noNavbar"}`}>
-        <Box sx={{ mb: 2 }}> 
+        <Box sx={{ mb: 2 }}>
           <IconButton onClick={toggleMenu} aria-label="menu">
             {isNavbarOpen ? <CloseIcon /> : <MenuIcon />}
           </IconButton>

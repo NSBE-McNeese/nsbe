@@ -11,16 +11,14 @@ const PointsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // We create a local async function to handle the loading state
     const loadData = async () => {
       await fetchPoints();
       setIsLoading(false);
     };
-    
+
     loadData();
   }, [fetchPoints]);
 
-  // Loading Screen (Prevents the "0 points" flash)
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -46,7 +44,7 @@ const PointsPage = () => {
             <p className="green-text">{pointsData.total_points}</p>
           </div>
         </div>
-        
+
         <div className="stat-card">
           <h2>Events Attended</h2>
           <div className="stat-number">
@@ -56,26 +54,23 @@ const PointsPage = () => {
       </div>
 
       <div className="activity-section">
-        
         {/* Left Column: Event History */}
         <div className="history-column">
           <h2 className="section-title">
             Event History <i className="bx bx-history"></i>
           </h2>
-          
+
           <div className="event-list">
             {pointsData.member_posts && pointsData.member_posts.length > 0 ? (
               pointsData.member_posts.map((event, index) => (
                 <div key={index} className="event-item">
-                  <div className="event-points">
-                    +{event.points}
-                  </div>
+                  <div className="event-points">+{event.points}</div>
                   <div className="event-details">
                     <span className="event-date">
                       {new Date(event.start_time).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
-                        year: "numeric"
+                        year: "numeric",
                       })}
                     </span>
                     <p className="event-title">
@@ -99,7 +94,7 @@ const PointsPage = () => {
             <section className="table-header">
               <h2 className="section-title green-text">Top Members</h2>
             </section>
-            
+
             <section className="table-body">
               <table>
                 <thead>
@@ -115,7 +110,9 @@ const PointsPage = () => {
                       <tr key={index} className={index < 3 ? "top-three" : ""}>
                         <td>{index + 1}</td>
                         <td className="member-name">
-                          <PersonIcon sx={{ fontSize: "1.2rem", marginRight: "5px", color: "#666" }} /> 
+                          <PersonIcon
+                            sx={{ fontSize: "1.2rem", marginRight: "5px", color: "#666" }}
+                          />
                           {member.first_name} {member.last_name}
                         </td>
                         <td className="points-cell">{member.pointsum}</td>
@@ -123,7 +120,9 @@ const PointsPage = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="3" style={{textAlign: "center"}}>No rankings available yet.</td>
+                      <td colSpan="3" style={{ textAlign: "center" }}>
+                        No rankings available yet.
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -131,7 +130,6 @@ const PointsPage = () => {
             </section>
           </div>
         </div>
-
       </div>
     </div>
   );

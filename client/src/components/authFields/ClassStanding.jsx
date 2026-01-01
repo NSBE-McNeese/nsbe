@@ -10,9 +10,7 @@ const ClassStanding = ({ inputValue, onInputChange }) => {
       <Autocomplete
         options={class_standings}
         name="class_standing"
-        renderInput={(params) => (
-          <TextField {...params} label="Class Standing" />
-        )}
+        renderInput={(params) => <TextField {...params} label="Class Standing" />}
         inputValue={inputValue}
         onInputChange={onInputChange}
         sx={{

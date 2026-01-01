@@ -14,12 +14,12 @@ const theme = createTheme({
       contrastText: "#000",
     },
     background: {
-      default: "#f8f9fa", 
-      paper: "#ffffff",   
+      default: "#f8f9fa",
+      paper: "#ffffff",
     },
     text: {
-      primary: "#202124", 
-      secondary: "#5f6368", 
+      primary: "#202124",
+      secondary: "#5f6368",
     },
   },
   typography: {
@@ -53,12 +53,12 @@ const theme = createTheme({
         root: {
           borderRadius: 4,
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderWidth: "2px", 
+            borderWidth: "2px",
           },
         },
       },
     },
- 
+
     MuiButton: {
       styleOverrides: {
         root: {

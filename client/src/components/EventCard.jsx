@@ -5,12 +5,8 @@ import parseTime from "../utils/parseTime";
 import EventContext from "../context/EventContext";
 
 const EventCard = ({ event }) => {
-  const {
-    handleRegistration,
-    handleUnregistration,
-    isUserRegistered,
-    isUpcoming,
-  } = useContext(EventContext);
+  const { handleRegistration, handleUnregistration, isUserRegistered, isUpcoming } =
+    useContext(EventContext);
 
   const isUserRegisteredForEvent = isUserRegistered[event.slug];
 
@@ -36,17 +32,11 @@ const EventCard = ({ event }) => {
 
           {isUpcoming ? (
             isUserRegisteredForEvent ? (
-              <Button
-                onClick={() => handleUnregistration(event.slug)}
-                variant="outlined"
-              >
+              <Button onClick={() => handleUnregistration(event.slug)} variant="outlined">
                 Unregister
               </Button>
             ) : (
-              <Button
-                onClick={() => handleRegistration(event.slug)}
-                variant="contained"
-              >
+              <Button onClick={() => handleRegistration(event.slug)} variant="contained">
                 Register
               </Button>
             )

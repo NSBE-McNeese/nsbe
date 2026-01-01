@@ -7,3 +7,5 @@ django-jazzmin
 django-address
 django-environ
 gunicorn
+psycopg2-binary
+whitenoise

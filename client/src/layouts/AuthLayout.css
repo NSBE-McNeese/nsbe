@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
 * {
   margin: 0;
@@ -6,11 +6,7 @@
   box-sizing: border-box;
   text-decoration: none;
   font-family: "Outfit", sans-serif;
-  -webkit-font-smoothing: antialiased; 
-}
-
-body {
-  position: relative;
+  -webkit-font-smoothing: antialiased;
 }
 
 .auth-layout {
@@ -20,6 +16,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .auth-layout::before {
@@ -32,7 +29,7 @@ body {
   background-image: url("../logo/background_network_lines.jpeg");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 1380px 920px;
+  background-size: cover;
   filter: blur(5px);
   z-index: -2;
 }

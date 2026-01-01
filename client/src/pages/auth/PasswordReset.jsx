@@ -33,9 +33,7 @@ const PasswordReset = () => {
               onChange={(e) => setPassword(e.target.value)}
               error={password && password.length < 8}
               helperText={
-                password && password.length < 8
-                  ? "Password must be at least 8 characters."
-                  : ""
+                password && password.length < 8 ? "Password must be at least 8 characters." : ""
               }
             />
           </Grid>
@@ -46,9 +44,7 @@ const PasswordReset = () => {
               autoComplete="new-password"
               label="Confirm New Password"
               onChange={(e) => setPassword2(e.target.value)}
-              error={
-                password2 && (password2.length < 8 || password !== password2)
-              }
+              error={password2 && (password2.length < 8 || password !== password2)}
               helperText={
                 password2 && password2.length < 8
                   ? "Password must be at least 8 characters."
