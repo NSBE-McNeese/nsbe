@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
 
-# Global Environment Variables to prevent typos
+# Global env variables
 env:
   PROJECT_ID: nsbe-app-482908
   REGION: us-central1
@@ -18,31 +18,29 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # 1. Authenticate to Google Cloud
+    # Authenticate to Google Cloud
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-    # 2. Configure Docker
+    # Configure Docker
     - name: Docker Auth
       run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
-    # 3. Build & Push Server (The Django app)
+    # Build & Push Server (The Django app)
     - name: Build and Push Server
       run: |
-        # We use ./server because that is your folder name
         docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/backend:latest ./server
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/backend:latest
 
-    # 4. Build & Push Client (The React app)
+    # Build & Push Client (The React app)
     - name: Build and Push Client
       run: |
-        # We use ./client because that is your folder name
         docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest ./client
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest
 
-    # 5. Get GKE Credentials
+    # Get GKE Credentials
     - name: Get GKE Credentials
       uses: google-github-actions/get-gke-credentials@v1
       with:
@@ -51,5 +49,6 @@ jobs:
 
     # 6. Deploy to GKE
     - name: Apply K8s Manifests
-        # This will run your client.yaml and server.yaml inside the k8s folder
-      run: kubectl apply -f k8s/
+      run: 
+        kubectl apply -f infra/k8s/client.yaml
+        kubectl apply -f infra/k8s/server.yaml
