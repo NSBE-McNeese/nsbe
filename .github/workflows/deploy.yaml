@@ -49,6 +49,6 @@ jobs:
 
     # 6. Deploy to GKE
     - name: Apply K8s Manifests
-      run: 
+      run: |
         kubectl apply -f infra/k8s/client.yaml
         kubectl apply -f infra/k8s/server.yaml
