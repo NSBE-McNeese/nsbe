@@ -5,3 +5,4 @@ djangorestframework-simplejwt
 Pillow
 django-jazzmin
 django-address
+django-environ
