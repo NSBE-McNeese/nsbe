@@ -6,3 +6,4 @@ Pillow
 django-jazzmin
 django-address
 django-environ
+gunicorn
