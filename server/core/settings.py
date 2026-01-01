@@ -114,3 +114,8 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="paccysan@gmail.com")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="") 
 
 GOOGLE_API_KEY = env("GOOGLE_API_KEY", default="")
+
+# kubectl exec -it backend-7f6c98d6cb-pvmv8 -- python manage.py migrate
+# kubectl exec -it backend-77c9c8dbd9-nhbnx -- python manage.py createsuperuser
+# backend-77c9c8dbd9-nhbnx    0/1     Running   27 (6m56s ago)   116m
+# backend-7f6c98d6cb-pvmv8
