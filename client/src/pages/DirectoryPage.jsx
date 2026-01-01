@@ -20,6 +20,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import SchoolIcon from "@mui/icons-material/School";
 
+import { api } from "../api";
+
 const DirectoryPage = () => {
   const { authTokens, user } = useContext(AuthContext);
   const [members, setMembers] = useState([]);
@@ -37,8 +39,7 @@ const DirectoryPage = () => {
       if (!authTokens) return;
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/directory/", {
-          method: "GET",
+        const response = await api.get("directory/", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authTokens.access}`,

@@ -5,6 +5,7 @@ import AuthContext from "../context/AuthContext";
 import { 
   Container, Box, Typography, Paper, Alert, Button, TextField, Divider 
 } from "@mui/material";
+import { api } from "../api";
 
 const AdminScanner = () => {
   const { authTokens } = useContext(AuthContext);
@@ -18,8 +19,8 @@ const AdminScanner = () => {
     setIsScanning(false);
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/check-in/",
+      const response = await api.post(
+        "/check-in/",
         { qr_token: token },
         {
           headers: { Authorization: `Bearer ${authTokens.access}` },

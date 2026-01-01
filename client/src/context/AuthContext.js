@@ -3,12 +3,10 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import api from "../api";
 
 const AuthContext = createContext();
 export default AuthContext;
-
-// Define the base URL for your API
-const baseUrl = "http://127.0.0.1:8000/api/auth";
 
 export const AuthProvider = ({ children }) => {
   const [authTokens, setAuthTokens] = useState(() =>
@@ -39,7 +37,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (email, password) => {
     try {
-      const { data, status } = await axios.post(`${baseUrl}/token/`, {
+      const { data, status } = await api.post(`auth/token/`, {
         email,
         password,
       });
@@ -67,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     password2,
   ) => {
     try {
-      const { status } = await axios.post(`${baseUrl}/register/`, {
+      const { status } = await api.post(`auth/register/`, {
         first_name,
         last_name,
         major,
@@ -91,7 +89,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyEmail = async (token, setVerifiedUserEmail) => {
     try {
-      const { data, status } = await axios.post(`${baseUrl}/token/verify/`, {
+      const { data, status } = await api.post(`auth/token/verify/`, {
         token,
       });
 
@@ -114,7 +112,7 @@ export const AuthProvider = ({ children }) => {
   };
   const passwordResetRequest = async (email) => {
     try {
-      const response = await axios.post(`${baseUrl}/password-reset-request/`, {
+      const response = await api.post(`auth/password-reset-request/`, {
         email,
       });
       toast.success("Password reset email sent. Check your inbox!");
@@ -128,7 +126,7 @@ export const AuthProvider = ({ children }) => {
   const passwordReset = async (password, password2) => {
     try {
       const email = verifiedEmail || (user ? user.email : "");
-      const { status } = await axios.put(`${baseUrl}/password-reset/`, {
+      const { status } = await api.put(`auth/password-reset/`, {
         email,
         password,
         password2,

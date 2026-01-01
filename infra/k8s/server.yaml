@@ -39,7 +39,7 @@ spec:
               key: GOOGLE_KEY
         readinessProbe:
           httpGet:
-            path: /
+            path: /admin/login/
             port: 8000
           initialDelaySeconds: 20
           periodSeconds: 10

@@ -3,11 +3,10 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import AuthContext from "./AuthContext";
 import { jwtDecode } from "jwt-decode";
+import { api } from "../api";
 
 const EventContext = createContext();
 export default EventContext;
-
-const baseURL = "http://127.0.0.1:8000/api";
 
 export const EventProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -38,7 +37,7 @@ export const EventProvider = ({ children }) => {
 
   const fetchPoints = async () => {
     try {
-      const response = await axios.get(`${baseURL}/points/`, {
+      const response = await api.get(`dashboard/`, {
         headers: { Authorization: `Bearer ${authTokens.access}` },
       });
       setPointsData(response.data);
@@ -54,7 +53,7 @@ export const EventProvider = ({ children }) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(`${baseURL}/events/`, {
+      const response = await api.get(`events/`, {
         headers: { Authorization: `Bearer ${authTokens.access}` },
       });
 
@@ -89,7 +88,7 @@ export const EventProvider = ({ children }) => {
   // Check Status
   const checkAttendanceStatus = async (slug) => {
   try {
-    const res = await axios.get(`${baseURL}/events/${slug}/attendance/`, {
+    const res = await api.get(`events/${slug}/attendance/`, {
       headers: { Authorization: `Bearer ${authTokens.access}` },
     });
     
@@ -119,7 +118,7 @@ export const EventProvider = ({ children }) => {
   // Register
   const handleRegistration = async (slug) => {
     try {
-      const response = await axios.post(`${baseURL}/events/${slug}/attendance/`, {}, {
+      const response = await api.post(`events/${slug}/attendance/`, {}, {
         headers: { Authorization: `Bearer ${authTokens.access}` },
       });
 
@@ -139,7 +138,7 @@ export const EventProvider = ({ children }) => {
   // Unregister
   const handleUnregistration = async (slug) => {
     try {
-      const response = await axios.delete(`${baseURL}/events/${slug}/attendance/`, {
+      const response = await api.delete(`events/${slug}/attendance/`, {
         headers: { Authorization: `Bearer ${authTokens.access}` },
       });
 
@@ -161,7 +160,7 @@ export const EventProvider = ({ children }) => {
   
   const fetchEvent = async (event_slug) => {
     try {
-      const response = await axios.get(`${baseURL}/events/${event_slug}/`, {
+      const response = await api.get(`events/${event_slug}/`, {
         headers: { Authorization: `Bearer ${authTokens.access}` },
       });
 

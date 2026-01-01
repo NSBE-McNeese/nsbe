@@ -32,8 +32,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { toast } from "react-toastify";
+import { api } from "../api";
 
-// ... (Keep EditField Component EXACTLY as it was) ...
 const EditField = ({ label, name, value, icon, onSave, options = null, readOnly = false }) => {
   const [localValue, setLocalValue] = useState(value || "");
   const [loading, setLoading] = useState(false);
@@ -101,11 +101,11 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  // --- DELETE STATE ---
+
   const [openDelete, setOpenDelete] = useState(false);
   const [deletePassword, setDeletePassword] = useState(""); // Store password input
 
-  // 1. FETCH DATA
+  // Fetch profile data
   useEffect(() => {
     const getProfileData = async () => {
         try {
@@ -123,7 +123,7 @@ const ProfilePage = () => {
     getProfileData();
   }, []); 
 
-  // 2. UPDATE HANDLER
+  // Update handler
   const handleUpdate = async (field, newValue) => {
     try {
       const payload = { [field]: newValue };
@@ -139,7 +139,7 @@ const ProfilePage = () => {
     }
   };
 
-  // 3. DELETE HANDLER (NOW WITH PASSWORD)
+  // Delete account handler
   const handleDeleteAccount = async () => {
     if (!deletePassword) {
         toast.warning("Please enter your password to confirm.");
