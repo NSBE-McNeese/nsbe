@@ -117,5 +117,9 @@ class EventAttendance(models.Model):
     checked_in_at = models.DateTimeField(null=True, blank=True)
     qr_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
+    @property
+    def is_checked_in(self):
+        return self.checked_in_at is not None
+
     class Meta:
         unique_together = ("user", "event")
