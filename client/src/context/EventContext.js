@@ -83,8 +83,14 @@ export const EventProvider = ({ children }) => {
         [slug]: {
           is_registered: res.data.is_registered || false,
           qr_token: res.data.qr_token || null,
-          is_approved: res.data.is_approved || false,
-          status: res.data.status || "pending",
+          is_approved: res.data.is_approved || res.data.checked_in || false,
+          status: res.data.status
+            ? res.data.status
+            : res.data.checked_in
+              ? "checked_in"
+              : res.data.is_registered
+                ? "pending"
+                : "not_registered",
         },
       }));
     } catch (error) {
@@ -111,6 +117,12 @@ export const EventProvider = ({ children }) => {
 
   const handleUnregistration = useCallback(async (slug) => {
     try {
+      const current = attendanceStatus[slug];
+      if (current?.is_approved || current?.status === "checked_in") {
+        toast.error("Cannot cancel after approval/check-in.");
+        return;
+      }
+
       const response = await api.delete(`/events/${slug}/attendance/`);
       if (response.status === 200) {
         toast.info("Unregistered successfully.");

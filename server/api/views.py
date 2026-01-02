@@ -236,6 +236,8 @@ class UserEventActionView(APIView):
                     "is_registered": True,
                     "qr_token": str(attendance.qr_token),
                     "checked_in": attendance.is_checked_in,
+                    "is_approved": attendance.is_checked_in,
+                    "status": "checked_in" if attendance.is_checked_in else "pending",
                     "event_title": attendance.event.title,
                 }
             )
