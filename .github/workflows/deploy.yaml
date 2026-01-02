@@ -37,7 +37,7 @@ jobs:
     # Build & Push Client (The React app)
     - name: Build and Push Client
       run: |
-        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest ./client
+        docker build --build-arg REACT_APP_API_URL=http://34.70.214.110/api -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest ./client
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/frontend:latest
 
     # Get GKE Credentials
