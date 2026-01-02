@@ -12,10 +12,12 @@ spec:
       labels:
         app: backend
     spec:
+      imagePullSecrets:
+      - name: gcr-json-key
       initContainers:
       - name: migrate
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         command: ["python", "manage.py", "migrate"]
         env:
         - name: PYTHONUNBUFFERED
@@ -43,7 +45,7 @@ spec:
               key: SECRET_KEY
       - name: permissions
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         command:
           - /bin/bash
           - -c
@@ -87,7 +89,7 @@ spec:
       containers:
       - name: backend
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:

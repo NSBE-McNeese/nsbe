@@ -12,9 +12,12 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+      - name: gcr-json-key
       containers:
       - name: frontend
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/frontend:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:
