@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import QRCode from "react-qr-code";
+import { toast } from "react-toastify";
 import EventContext from "../context/EventContext";
 import {
   Container,
