@@ -213,9 +213,24 @@ class EventUnregister(APIView):
 class UserEventActionView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, slug):
+    def _get_event(self, slug=None, event_id=None):
+        """Helper method to get event by slug or ID"""
+        if slug:
+            return get_object_or_404(Event, slug=slug)
+        elif event_id:
+            return get_object_or_404(Event, id=event_id)
+        else:
+            raise ValueError("Either slug or event_id must be provided")
+
+    def get(self, request, slug=None, event_id=None):
         try:
-            attendance = EventAttendance.objects.get(user=request.user, event__slug=slug)
+            if slug:
+                attendance = EventAttendance.objects.get(user=request.user, event__slug=slug)
+            elif event_id:
+                attendance = EventAttendance.objects.get(user=request.user, event__id=event_id)
+            else:
+                return Response({"error": "slug or event_id required"}, status=status.HTTP_400_BAD_REQUEST)
+
             return Response(
                 {
                     "is_registered": True,
@@ -225,10 +240,10 @@ class UserEventActionView(APIView):
                 }
             )
         except EventAttendance.DoesNotExist:
-            return Response({"is_registered": False}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"is_registered": False}, status=status.HTTP_200_OK)
 
-    def post(self, request, slug):
-        event = get_object_or_404(Event, slug=slug)
+    def post(self, request, slug=None, event_id=None):
+        event = self._get_event(slug=slug, event_id=event_id)
         user = request.user
 
         attendance, created = EventAttendance.objects.get_or_create(user=user, event=event)
@@ -248,8 +263,8 @@ class UserEventActionView(APIView):
             status=status.HTTP_201_CREATED,
         )
 
-    def delete(self, request, slug):
-        event = get_object_or_404(Event, slug=slug)
+    def delete(self, request, slug=None, event_id=None):
+        event = self._get_event(slug=slug, event_id=event_id)
         user = request.user
 
         try:
