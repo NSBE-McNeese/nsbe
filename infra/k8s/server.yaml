@@ -12,40 +12,7 @@ spec:
       labels:
         app: backend
     spec:
-      initContainers:
-      - name: migrate
-        image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
-        command: ["python", "manage.py", "migrate"]
-        env:
-        - name: PYTHONUNBUFFERED
-          value: "1"
-        - name: DEBUG
-          value: "False"
-        - name: DB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: DB_HOST
-        - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: DB_NAME
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: DB_USER
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: DB_PASSWORD
-        - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: SECRET_KEY
+      initContainers: []
       containers:
       - name: backend
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
@@ -87,12 +54,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: backend-secrets
-              key: EMAIL_PASSWORD
+              key: EMAIL_HOST_PASSWORD
         - name: GOOGLE_API_KEY
           valueFrom:
             secretKeyRef:
               name: backend-secrets
-              key: GOOGLE_KEY
+              key: GOOGLE_API_KEY
         - name: CORS_ALLOWED_ORIGINS
           value: "http://localhost:3000,http://frontend-service"
 ---
