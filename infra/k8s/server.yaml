@@ -24,6 +24,18 @@ spec:
           value: "1"
         - name: DEBUG
           value: "False"
+        - name: EMAIL_BACKEND
+          value: "django.core.mail.backends.smtp.EmailBackend"
+        - name: EMAIL_HOST_USER
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: EMAIL_HOST_USER
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: EMAIL_HOST_PASSWORD
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
@@ -32,6 +44,13 @@ spec:
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
+        - name: EMAIL_BACKEND
+          value: "django.core.mail.backends.smtp.EmailBackend"
+        - name: EMAIL_HOST_USER
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: EMAIL_HOST_USER
               name: backend-secrets
               key: DB_NAME
         - name: DB_USER
@@ -123,6 +142,13 @@ spec:
             secretKeyRef:
               name: backend-secrets
               key: EMAIL_HOST_PASSWORD
+        - name: EMAIL_BACKEND
+          value: "django.core.mail.backends.smtp.EmailBackend"
+        - name: EMAIL_HOST_USER
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: EMAIL_HOST_USER
         - name: GOOGLE_API_KEY
           valueFrom:
             secretKeyRef:

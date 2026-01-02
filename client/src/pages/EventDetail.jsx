@@ -67,6 +67,21 @@ const EventDetail = () => {
     };
   }, [event_slug, fetchEvent, checkAttendanceStatus]);
 
+  // Lightweight auto-refresh of attendance status while the user is on the page
+  useEffect(() => {
+    if (!event_slug) return;
+
+    const interval = setInterval(() => {
+      // Only poll when we already have a registration record and it is not approved yet
+      const status = attendanceStatus[event_slug];
+      if (status?.is_registered && !status?.is_approved) {
+        checkAttendanceStatus(event_slug);
+      }
+    }, 10000); // 10s poll
+
+    return () => clearInterval(interval);
+  }, [event_slug, attendanceStatus, checkAttendanceStatus]);
+
   // Show loading if checking status OR event not loaded yet
   if (checkingStatus) {
     return <LinearProgress />;
