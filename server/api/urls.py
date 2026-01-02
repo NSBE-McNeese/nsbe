@@ -28,18 +28,18 @@ urlpatterns = [
         views.EventUnregister.as_view(),
         name="event_unregister",
     ),
-    path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
-    path("directory/", views.DirectoryListView.as_view(), name="directory-list"),
-    path("profile/update/", views.UserProfileUpdateView.as_view(), name="profile-update"),
+    path(
+        "events/<slug:slug>/attendance/",
+        views.UserEventActionView.as_view(),
+        name="event-attendance-slug",
+    ),
     path(
         "events/<int:event_id>/attendance/",
         views.UserEventActionView.as_view(),
         name="event-attendance",
     ),
+    path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
+    path("directory/", views.DirectoryListView.as_view(), name="directory-list"),
+    path("profile/update/", views.UserProfileUpdateView.as_view(), name="profile-update"),
     path("check-in/", views.AdminScanView.as_view(), name="admin-check-in"),
-    path(
-        "events/<slug:slug>/attendance/",
-        views.UserEventActionView.as_view(),
-        name="event-attendance",
-    ),
 ]
