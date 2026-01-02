@@ -133,3 +133,6 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="paccysan@gmail.com")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 
 GOOGLE_API_KEY = env("GOOGLE_API_KEY", default="")
+
+# Frontend base URL used in emails (verification/reset links)
+FRONTEND_URL = env("FRONTEND_URL", default="http://34.70.214.110")

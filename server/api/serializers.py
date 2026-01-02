@@ -11,8 +11,8 @@ from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
-# Frontend base URL
-base_url = "http://localhost:3000"
+# Frontend base URL (configured in settings; falls back to localhost only if not set)
+base_url = getattr(settings, "FRONTEND_URL", "http://localhost:3000")
 
 
 class UserSerializer(serializers.ModelSerializer):
