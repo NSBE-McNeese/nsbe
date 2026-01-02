@@ -31,7 +31,8 @@ const DirectoryPage = () => {
   const getAvatarUrl = (avatarPath) => {
     if (!avatarPath) return null;
     if (avatarPath.startsWith("http")) return avatarPath;
-    return `${process.env.REACT_APP_API_URL?.replace("/api", "") || ""}${avatarPath}`;
+    const baseUrl = window.API_URL?.replace("/api", "") || process.env.REACT_APP_API_URL?.replace("/api", "") || "";
+    return `${baseUrl}${avatarPath}`;
   };
 
   useEffect(() => {
@@ -46,7 +47,7 @@ const DirectoryPage = () => {
           },
         });
 
-        const data = await response.json();
+        const data = response.data;
 
         if (Array.isArray(data)) {
           setMembers(data);
