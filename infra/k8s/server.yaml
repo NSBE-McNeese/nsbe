@@ -40,6 +40,48 @@ spec:
             secretKeyRef:
               name: backend-secrets
               key: SECRET_KEY
+      - name: permissions
+        image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
+        command:
+          - /bin/bash
+          - -c
+          - |
+            python manage.py shell <<'HEREDOC'
+            from django.db import connection
+            from django.conf import settings
+            
+            db_user = settings.DATABASES['default']['USER']
+            with connection.cursor() as cursor:
+              cursor.execute(f"GRANT USAGE ON SCHEMA public TO {db_user};")
+              cursor.execute(f"GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {db_user};")
+              cursor.execute(f"GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO {db_user};")
+              cursor.execute(f"GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO {db_user};")
+            print("Permissions granted successfully")
+            HEREDOC
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DEBUG
+          value: "False"
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: DB_HOST
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: DB_NAME
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "Password@123"
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: SECRET_KEY
       containers:
       - name: backend
         image: us-central1-docker.pkg.dev/nsbe-app-482908/nsbe-repo/backend:latest
@@ -63,15 +105,9 @@ spec:
               name: backend-secrets
               key: DB_NAME
         - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: DB_USER
+          value: "postgres"
         - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: DB_PASSWORD
+          value: "Password@123"
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
