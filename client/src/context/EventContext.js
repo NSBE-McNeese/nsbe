@@ -12,6 +12,7 @@ export const EventProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
+  const [eventDetail, setEventDetail] = useState(null);
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [attendanceStatus, setAttendanceStatus] = useState({});
@@ -43,6 +44,17 @@ export const EventProvider = ({ children }) => {
       console.error("Events fetch error:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchEvent = async (slug) => {
+    try {
+      const response = await api.get(`/events/${slug}/`);
+      if (response.status === 200) {
+        setEventDetail(response.data);
+      }
+    } catch (error) {
+      console.error("Event detail fetch error:", error);
     }
   };
 
@@ -114,9 +126,12 @@ export const EventProvider = ({ children }) => {
   const contextData = {
     loading,
     events,
+    eventDetail,
     filteredEvents,
     isUpcoming,
     setIsUpcoming,
+    fetchEvent,
+    fetchEvents,
     checkAttendanceStatus,
     handleRegistration,
     handleUnregistration,

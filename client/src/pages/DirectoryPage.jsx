@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import useAxios from "../utils/useAxios";
 import {
   Container,
   Grid,
@@ -20,10 +21,9 @@ import EmailIcon from "@mui/icons-material/Email";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import SchoolIcon from "@mui/icons-material/School";
 
-import api from "../api";
-
 const DirectoryPage = () => {
   const { authTokens, user } = useContext(AuthContext);
+  const api = useAxios();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,12 +40,7 @@ const DirectoryPage = () => {
       if (!authTokens) return;
 
       try {
-        const response = await api.get("directory/", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        });
+        const response = await api.get("directory/");
 
         const data = response.data;
 
