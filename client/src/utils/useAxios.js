@@ -24,14 +24,16 @@ const useAxios = () => {
   const axiosInstance = useMemo(() => {
     const instance = axios.create({
       baseURL,
-      headers: { Authorization: `Bearer ${authTokens?.access}` },
     });
 
     instance.interceptors.request.use(async (req) => {
-      if (!authTokens) return req;
+      if (!authTokens?.access) return req;
 
       const user = jwtDecode(authTokens.access);
       const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
+
+      // Always set the Authorization header when we have a token
+      req.headers.Authorization = `Bearer ${authTokens.access}`;
 
       if (!isExpired) return req;
 
