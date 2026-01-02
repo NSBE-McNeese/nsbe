@@ -65,7 +65,7 @@ const EventDetail = () => {
   }, [event_slug, fetchEvent, checkAttendanceStatus]);
 
   // Show loading if checking status OR event not loaded yet
-  if (checkingStatus || !eventDetail || eventDetail.slug !== event_slug) {
+  if (checkingStatus || !eventDetail || eventDetail?.slug !== event_slug) {
     return <LinearProgress />;
   }
 

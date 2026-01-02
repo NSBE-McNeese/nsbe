@@ -130,6 +130,7 @@ export const EventProvider = ({ children }) => {
     filteredEvents,
     isUpcoming,
     setIsUpcoming,
+    attendanceStatus,
     fetchEvent,
     fetchEvents,
     checkAttendanceStatus,
