@@ -52,3 +52,4 @@ jobs:
       run: |
         kubectl apply -f infra/k8s/client.yaml
         kubectl apply -f infra/k8s/server.yaml
+        kubectl rollout restart deployment/backend deployment/frontend
