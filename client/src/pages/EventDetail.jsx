@@ -62,8 +62,7 @@ const EventDetail = () => {
     return () => {
       isMounted = false;
     };
-    // eslint-disable-next-line
-  }, [event_slug]);
+  }, [event_slug, fetchEvent, checkAttendanceStatus]);
 
   // Show loading if checking status OR event not loaded yet
   if (checkingStatus || !eventDetail || eventDetail.slug !== event_slug) {

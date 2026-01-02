@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useContext } from "react";
+import React, { createContext, useEffect, useState, useContext, useCallback } from "react";
 import { toast } from "react-toastify";
 import AuthContext from "./AuthContext";
 import useAxios from "../utils/useAxios";
@@ -74,7 +74,7 @@ export const EventProvider = ({ children }) => {
     setFilteredEvents(filtered);
   }, [events, isUpcoming]);
 
-  const checkAttendanceStatus = async (slug) => {
+  const checkAttendanceStatus = useCallback(async (slug) => {
     try {
       const res = await api.get(`/events/${slug}/attendance/`);
       setAttendanceStatus((prev) => ({
@@ -94,9 +94,9 @@ export const EventProvider = ({ children }) => {
         }));
       }
     }
-  };
+  }, [api]);
 
-  const handleRegistration = async (slug) => {
+  const handleRegistration = useCallback(async (slug) => {
     try {
       const response = await api.post(`/events/${slug}/attendance/`, {});
       if (response.status === 200 || response.status === 201) {
@@ -106,9 +106,9 @@ export const EventProvider = ({ children }) => {
     } catch (error) {
       toast.error("Registration failed.");
     }
-  };
+  }, [api, checkAttendanceStatus]);
 
-  const handleUnregistration = async (slug) => {
+  const handleUnregistration = useCallback(async (slug) => {
     try {
       const response = await api.delete(`/events/${slug}/attendance/`);
       if (response.status === 200) {
@@ -121,7 +121,7 @@ export const EventProvider = ({ children }) => {
     } catch (error) {
       toast.error("Unregistration failed.");
     }
-  };
+  }, [api]);
 
   const contextData = {
     loading,

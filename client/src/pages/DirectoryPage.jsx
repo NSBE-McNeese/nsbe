@@ -59,8 +59,7 @@ const DirectoryPage = () => {
     };
 
     fetchMembers();
-    // eslint-disable-next-line
-  }, [authTokens]);
+  }, [authTokens, api]);
 
   const filteredMembers = members.filter((member) => {
     if (user && member.id === user.user_id) return false;
