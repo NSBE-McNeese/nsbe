@@ -84,6 +84,13 @@ const EventDetail = () => {
   const ticketStatus = status.status; // 'pending', 'approved', 'checked_in', etc.
   const qrToken = status.qr_token;
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith("http")) return imagePath;
+    const baseUrl = window.API_URL?.replace("/api", "") || process.env.REACT_APP_API_URL?.replace("/api", "") || "";
+    return `${baseUrl}${imagePath}`;
+  };
+
   const isPast = new Date(eventDetail.end_time) < new Date();
 
   const startDate = new Date(eventDetail.start_time);
@@ -124,7 +131,7 @@ const EventDetail = () => {
           height: 350,
           bgcolor: "#00205B",
           backgroundImage: eventDetail.image
-            ? `url(${process.env.REACT_APP_API_URL?.replace("/api", "") || ""}${eventDetail.image})`
+            ? `url(${getImageUrl(eventDetail.image)})`
             : "linear-gradient(135deg, #005090 0%, #003366 100%)",
           backgroundSize: "cover",
           backgroundPosition: "center",
