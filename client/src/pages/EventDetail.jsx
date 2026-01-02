@@ -38,6 +38,7 @@ const EventDetail = () => {
 
   // Add loading state for attendance check
   const [checkingStatus, setCheckingStatus] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -45,10 +46,12 @@ const EventDetail = () => {
     const loadData = async () => {
       if (event_slug) {
         try {
+          setError(null);
           await fetchEvent(event_slug);
           await checkAttendanceStatus(event_slug);
         } catch (error) {
           console.error("Error loading event data:", error);
+          if (isMounted) setError("Failed to load event data.");
         } finally {
           if (isMounted) {
             setCheckingStatus(false);
@@ -65,8 +68,21 @@ const EventDetail = () => {
   }, [event_slug, fetchEvent, checkAttendanceStatus]);
 
   // Show loading if checking status OR event not loaded yet
-  if (checkingStatus || !eventDetail || eventDetail?.slug !== event_slug) {
+  if (checkingStatus) {
     return <LinearProgress />;
+  }
+
+  if (error || !eventDetail || eventDetail?.slug !== event_slug) {
+    return (
+      <Container sx={{ mt: 10, textAlign: "center" }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error || "Event not found."}
+        </Alert>
+        <Button component={Link} to="/events" variant="contained">
+          Back to Events
+        </Button>
+      </Container>
+    );
   }
 
   // --- LOGIC ---
