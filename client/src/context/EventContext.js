@@ -47,7 +47,7 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-  const fetchEvent = async (slug) => {
+  const fetchEvent = useCallback(async (slug) => {
     try {
       const response = await api.get(`/events/${slug}/`);
       if (response.status === 200) {
@@ -55,8 +55,9 @@ export const EventProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Event detail fetch error:", error);
+      throw error;
     }
-  };
+  }, [api]);
 
   useEffect(() => {
     if (authTokens) {
