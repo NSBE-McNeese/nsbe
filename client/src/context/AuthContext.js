@@ -41,7 +41,13 @@ export const AuthProvider = ({ children }) => {
         toast.error("Invalid username and/or password");
       }
     } catch (error) {
-      toast.error("An error occurred during login. Please try again.");
+      if (error.response?.status === 401) {
+        toast.error("Invalid email or password.");
+      } else if (error.response?.data?.detail) {
+        toast.error(error.response.data.detail);
+      } else {
+        toast.error("An error occurred during login. Please try again.");
+      }
     }
   };
 
@@ -72,7 +78,21 @@ export const AuthProvider = ({ children }) => {
         toast.error("An error occurred during registration.");
       }
     } catch (error) {
-      toast.error("System error. Please try again later.");
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        // Handle field-specific errors from Django REST Framework
+        if (typeof errorData === "object" && !Array.isArray(errorData)) {
+          const firstError = Object.values(errorData)[0];
+          const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+          toast.error(errorMessage || "An error occurred during registration.");
+        } else if (errorData.detail) {
+          toast.error(errorData.detail);
+        } else {
+          toast.error("An error occurred during registration.");
+        }
+      } else {
+        toast.error("System error. Please try again later.");
+      }
     }
   };
 
